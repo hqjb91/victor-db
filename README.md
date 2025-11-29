@@ -27,7 +27,7 @@ PERSISTENCE (IndexedDB)
 VictorDb expects the embedding and storage dependencies to be installed by the host app:
 
 ```bash
-npm install victor-db @huggingface/transformers idb
+npm install victor-db-ts @huggingface/transformers idb
 ```
 
 ## Quick start
@@ -41,7 +41,7 @@ import {
   hnswIndexPlugin,
   indexedDbProviderPlugin,
   quantizationPreprocessor,
-} from 'victor-db'
+} from 'victor-db-ts'
 
 const db = new VictorDb()
 
@@ -92,7 +92,7 @@ console.log(results)
 ### Writing your own plugin
 
 ```ts
-import type { VictorDbPlugin } from 'victor-db'
+import type { VictorDbPlugin } from 'victor-db-ts'
 
 export function myDistancePlugin(): VictorDbPlugin {
   return {
