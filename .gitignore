@@ -5,6 +5,8 @@ dist/
 lib/
 build/
 build-tests/
+example/react-sample/node_modules/
+example/react-sample/dist/
 
 # Node.js and npm
 node_modules/

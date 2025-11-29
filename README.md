@@ -1,5 +1,7 @@
 # VictorDb
 
+![VictorDb](assets/victor-db-screenshot.gif)
+
 Local‑first vector database for browser environments. VictorDb handles chunking, embedding, preprocessing, Approximate Nearest Neighbors (ANN) indexing Hierachical Navigable Small Worlds (HNSW), and persistence on top of IndexedDB so you can run retrieval without a server.
 
 ```

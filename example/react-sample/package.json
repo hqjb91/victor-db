@@ -1,0 +1,25 @@
+{
+  "name": "victor-db-test-sample",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.8.0",
+    "idb": "^8.0.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "victor-db-ts": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^5.0.0",
+    "typescript": "^5.4.0",
+    "vite": "^5.4.0"
+  }
+}

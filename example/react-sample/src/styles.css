@@ -1,0 +1,92 @@
+:root {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #0f172a;
+  background-color: #f8fafc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.app {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+h1 {
+  margin: 0 0 12px;
+}
+
+.status {
+  margin: 0 0 20px;
+  color: #475569;
+}
+
+.search-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.search-bar button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.search-bar button:disabled,
+.search-bar input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.result {
+  background: white;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.05);
+}
+
+.result header {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.muted {
+  color: #94a3b8;
+}
