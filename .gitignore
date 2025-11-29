@@ -1,0 +1,47 @@
+# Compiled JavaScript and Declaration Files
+# Exclude the output directory for compiled files (e.g., 'dist', 'lib', 'build')
+# Adjust 'dist/' if your output directory has a different name
+dist/
+lib/
+build/
+build-tests/
+
+# Node.js and npm
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-store/
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*.bak
+*.swo
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Test and Coverage Reports
+coverage/
+.nyc_output/
+
+# Logs
+*.log
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
+# TypeScript Specific
+# Exclude generated .js and .js.map files if they are alongside the .ts files and
+# not in a dedicated output directory (less common for libraries)
+# *.js
+# *.js.map
+
+# Other common ignored files
+*.tgz
+.eslintcache
