@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   VictorDb,
   chunkerPlugin,
@@ -29,7 +29,7 @@ const docs = [
   { id: '12', text: 'Quantum Computing 101: What You Need to Know.' },
   { id: '13', text: 'The Benefits of Daily Journaling: A Simple Path to Clarity.' },
   { id: '14', text: 'Minimalist Travel: Packing Light for a Fuller Experience.' },
-  { id: '15', text: 'The Future of Renewable Energy: What’s Coming Next.' },
+  { id: '15', text: 'The Future of Renewable Energy: What is Coming Next.' },
   { id: '16', text: 'How to Build Better Focus in a Digital Age.' },
   { id: '17', text: 'Plant-Based Diets: Myths, Facts, and Practical Tips.' },
   { id: '18', text: 'The Evolution of Smartphones: A Look Ahead.' },
@@ -70,7 +70,7 @@ const docs = [
   { id: '53', text: 'The Future of Education: Blended and Remote Learning.' },
   { id: '54', text: 'Minimalist Interior Design: Less Clutter, More Peace.' },
   { id: '55', text: 'Cold Exposure Therapy: Benefits and Precautions.' },
-  { id: '56', text: 'Robotics in Daily Life: What’s Already Here.' },
+  { id: '56', text: 'Robotics in Daily Life: What is Already Here.' },
   { id: '57', text: 'The Power of Silence: Resetting Your Mind.' },
   { id: '58', text: 'The Rise of Digital Nomads: A New Work Culture.' },
   { id: '59', text: 'How to Improve Gut Health Naturally.' },
@@ -93,15 +93,20 @@ const docs = [
 ];
 
 export default function App() {
-  const [status, setStatus] = useState('Bootstrapping VictorDb…')
-  const [query, setQuery] = useState('remote work')
+  const [status, setStatus] = useState('Initializing...')
+  const [query, setQuery] = useState('')
   const [results, setResults] = useState<Result[]>([])
+  const [isSearching, setIsSearching] = useState(false)
+  
   const db = useRef<VictorDb | null>(null)
+  const debounceTimer = useRef<NodeJS.Timeout>()
 
-  const init = useMemo(
-    () => async () => {
-      setStatus('Loading plugins…')
+  useEffect(() => {
+    let mounted = true
+
+    async function initDb() {
       const instance = new VictorDb()
+      
       await instance.use(chunkerPlugin())
       await instance.use(hfEmbeddingPlugin())
       await instance.use(cosineDistancePlugin())
@@ -116,27 +121,50 @@ export default function App() {
         persistenceProvider: 'indexeddb-provider',
       })
 
-      setStatus('Loading persisted index (if any)…')
       await instance.load()
 
-      setStatus('Indexing sample docs…')
       for (const doc of docs) {
         await instance.addText(doc.id, doc.text)
       }
 
-      db.current = instance
-      setStatus('Ready')
-      await runSearch(instance, query, setResults, setStatus)
-    },
-    [query]
-  )
+      if (mounted) {
+        db.current = instance
+        setStatus('Ready')
+      }
+    }
+
+    initDb().catch(err => {
+      console.error(err)
+      if (mounted) setStatus('Error: ' + err.message)
+    })
+
+    return () => { mounted = false }
+  }, [])
 
   useEffect(() => {
-    init().catch((err) => {
-      console.error(err)
-      setStatus(`Error: ${String(err.message || err)}`)
-    })
-  }, [init])
+    if (!db.current || !query.trim()) {
+      setResults([])
+      return
+    }
+
+    clearTimeout(debounceTimer.current)
+    
+    debounceTimer.current = setTimeout(async () => {
+      setIsSearching(true)
+      try {
+        const hits = await db.current!.search(query, 3)
+        setResults(hits.map(h => ({
+          id: h.id,
+          score: h.score,
+          text: h.payload.text,
+        })))
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setIsSearching(false)
+      }
+    }, 500)
+  }, [query])
 
   return (
     <main className="app">
@@ -146,25 +174,18 @@ export default function App() {
       <div className="search-bar">
         <input
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={e => setQuery(e.target.value)}
           placeholder="Ask anything…"
-          disabled={!db.current}
         />
-        <button
-          onClick={() =>
-            db.current && runSearch(db.current, query, setResults, setStatus)
-          }
-          disabled={!db.current}
-        >
-          Search
-        </button>
       </div>
 
       <section className="results">
-        {results.length === 0 ? (
-          <p className="muted">No results yet.</p>
+        {isSearching ? (
+          <p className="muted">Searching...</p>
+        ) : results.length === 0 ? (
+          <p className="muted">{query.trim() ? 'No results found.' : 'Start typing to search...'}</p>
         ) : (
-          results.map((r) => (
+          results.map(r => (
             <article key={r.id} className="result">
               <header>
                 <span className="pill">Score: {r.score.toFixed(3)}</span>
@@ -177,22 +198,4 @@ export default function App() {
       </section>
     </main>
   )
-}
-
-async function runSearch(
-  instance: VictorDb,
-  query: string,
-  setResults: (r: Result[]) => void,
-  setStatus: (s: string) => void
-) {
-  setStatus('Embedding & searching…')
-  const hits = await instance.search(query, 3)
-  setResults(
-    hits.map((h) => ({
-      id: h.id,
-      score: h.score,
-      text: h.payload.text,
-    }))
-  )
-  setStatus('Ready')
 }
